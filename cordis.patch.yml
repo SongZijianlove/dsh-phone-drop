@@ -1,0 +1,9 @@
+# dsh-phone-drop bundle patch: inserts one host row.
+#
+# The row mounts a small HTTP server bound to a LAN interface, so a phone on the
+# same Wi-Fi can open a page, shoot a document, and drop it into a folder on
+# this machine. It does NOT touch the Host webserver: that one refuses wildcard
+# bind addresses on purpose, and this plugin binds its own port instead.
+- insert:
+    - id: phone-drop
+      name: 'dsh-phone-drop'
