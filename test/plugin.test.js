@@ -18,6 +18,14 @@ import { fileURLToPath } from 'node:url';
 import { apply, name as pluginName } from '../lib/index.js';
 import { startDropBox } from '../lib/server.js';
 
+// The plugin resolves its receive directory through the override file in the
+// user's home. Tests must not read the real one — a developer (or a stray
+// `npm install -g`) may have a real `~/.dsh-phone-drop.json` whose `dir` would
+// override every temp dir passed below. Point it at a sandbox, exactly like
+// setup.test.js does, so `health.dir` can only ever report the temp dir.
+const pluginSandbox = mkdtempSync(join(tmpdir(), 'phone-drop-settings-'));
+process.env.DSH_PHONE_DROP_SETTINGS = join(pluginSandbox, 'override.json');
+
 /**
  * A minimal stand-in for the host context.
  *
@@ -29,6 +37,7 @@ function fakeContext() {
   const registered = [];
   const logs = [];
   const injected = [];
+  const routes = [];
 
   const ctx = {
     logger: {
@@ -55,6 +64,17 @@ function fakeContext() {
           },
         };
       }
+      if (services.includes('webServer')) {
+        child.webServer = {
+          register(route) {
+            if (routes.some((r) => r.kind === route.kind && r.path === route.path)) {
+              throw new Error(`duplicate route ${route.kind} ${route.path}`);
+            }
+            routes.push(route);
+            return () => routes.splice(routes.indexOf(route), 1);
+          },
+        };
+      }
       return fn(child);
     },
   };
@@ -64,6 +84,7 @@ function fakeContext() {
     registered,
     logs,
     injected,
+    routes,
     async dispose() {
       for (const d of disposers.reverse()) await d();
     },

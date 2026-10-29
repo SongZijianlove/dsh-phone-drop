@@ -1,6 +1,6 @@
 {
   "name": "dsh-phone-drop",
-  "version": "0.3.1",
+  "version": "0.4.2",
   "description": "局域网手机直传：电脑屏幕上出个二维码，手机扫一下就打开；拍照或扫描成黑白文档，直接落进电脑文件夹，不经过任何隧道，毫秒级。",
   "type": "module",
   "main": "lib/index.js",
@@ -9,12 +9,15 @@
   },
   "exports": {
     ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./setup": "./lib/setup.js",
     "./package.json": "./package.json"
   },
   "files": [
     "lib",
     "cordis.patch.yml",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "keywords": [
@@ -38,7 +41,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "postinstall": "node lib/postinstall.js"
   },
   "dsh": {
     "engines": {
@@ -46,6 +50,13 @@
     },
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-locale"
+      ]
     }
   }
 }

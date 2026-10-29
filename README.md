@@ -26,7 +26,7 @@ dsh plugin install dsh-phone-drop
 
 ```json
 {
-  "dependencies": { "dsh-phone-drop": "^0.3.1" },
+  "dependencies": { "dsh-phone-drop": "^0.4.1" },
   "dsh": { "profile": { "bundles": ["dsh-phone-drop"] } }
 }
 ```
@@ -37,6 +37,42 @@ dsh plugin install dsh-phone-drop
 dsh-phone-drop: 服务已启动，监听 0.0.0.0:9800，保存到 C:\Users\你\Pictures\dsh-phone-drop
 dsh-phone-drop: 手机请打开 http://192.168.1.23:9800
 ```
+
+### 第一次装会弹个设置窗口
+
+`npm install -g dsh-phone-drop` 装完之后，Windows 上会先弹一个小窗口，让你一次定三件事：
+
+1. **照片存到哪儿**（默认 `图片/dsh-phone-drop`，可点「浏览…」另选）；
+2. **要不要在桌面建「手机直传」快捷方式**；
+3. **装完要不要立刻打开一次二维码页面**。
+
+点「就这样」生效；点「跳过」或直接关窗口，什么都不改，用默认值。以后随时能重开这个窗口：
+
+```bash
+dsh-phone-drop --setup
+```
+
+或者跳过它：
+
+```bash
+dsh-phone-drop --no-setup
+```
+
+只有在**全局安装**（`npm install -g`）时才会弹；作为别人的依赖被装进去时不弹。这套设置只出现一次，选过的路径会记住，下次启动不再问。
+
+> **新版 npm 会拦 postinstall（重要）**：npm 11.16+ 起对「还没被 allowScripts 授权的安装脚本」默认拦截，装的时候会看到一行
+> `npm warn install-scripts 1 package has install scripts not yet covered by allowScripts: dsh-phone-drop@0.4.1`，
+> 这时安装弹窗**不会自己弹**。三条路，任选其一：
+>
+> 1. 装的时候带 `--allow-scripts=dsh-phone-drop`：
+>    ```bash
+>    npm install -g dsh-phone-drop --allow-scripts=dsh-phone-drop
+>    ```
+> 2. 或者永久放行这个包：
+>    ```bash
+>    npm config set allow-scripts=dsh-phone-drop --location=user
+>    ```
+> 3. 什么都不管，装完**第一次运行** `dsh-phone-drop` 时照样会弹（CLI 每次启动前都检查「设置过没有」，没设置过就弹同一个窗口）。所以「没弹窗」不等于「没法用」，跑一下命令就行。
 
 ## 用
 
@@ -112,6 +148,20 @@ npx dsh-phone-drop --port 9800 --dir ./收图 --open
 ```
 
 同一个服务器，同一个页面，前台跑着，Ctrl+C 停。`--open` 会直接把二维码页面开到浏览器里。
+
+### 命令行选项
+
+| 选项 | 作用 |
+| --- | --- |
+| `--port <n>` | 监听端口（默认 9800） |
+| `--host <addr>` | 绑定地址（默认 `0.0.0.0`） |
+| `--dir <path>` | 本次运行的接收目录（不写进设置文件） |
+| `--token <str>` | 访问口令 |
+| `--title <str>` | 页面标题 |
+| `--open` | 启动后自动打开二维码页面 |
+| `--no-qr` | 不在终端打印字符二维码 |
+| `--setup` | 打开设置窗口（选目录 / 快捷方式 / 自动打开） |
+| `--no-setup` | 跳过首次设置窗口 |
 
 ## 安全边界
 
