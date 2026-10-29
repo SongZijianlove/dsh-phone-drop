@@ -2,6 +2,17 @@
 
 本项目所有值得记录的改动都会写在这里。格式参照 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.4.3] - 2026-10-29
+
+### 新增
+
+- **DSH 页面里的「手机直传」按钮**：侧边栏底部多一个入口，点一下直接打开手机上要扫的二维码页面，不用再去翻工具、记端口。按钮通过 `dsh.client` 声明 + `lib/client.js` 提供，挂在 `sidebar.footer.action` 插槽（root 级、list、不会覆盖任何别人的入口）。
+- **`GET /api/phone-drop/info` 回环接口**：返回 `{running, dir, port, deskUrl}`，供上面的按钮使用。只接受本机回环地址（`127.0.0.1` / `::1`），其他来源一律 403；非 GET 返回 405。
+
+### 说明
+
+- 0.4.2 的 npm 包漏掉了 `lib/client.js` 与 `package.json` 里的 `dsh.client` 声明（先发的包、后补的界面），所以装 0.4.2 看不到按钮。0.4.3 把这两样补齐，`exports` 增加 `"./client"`。
+
 ## [0.4.2] - 2026-10-29
 
 ### 变更

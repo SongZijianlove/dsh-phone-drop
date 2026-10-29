@@ -1,6 +1,6 @@
 {
   "name": "dsh-phone-drop",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "局域网手机直传：电脑屏幕上出个二维码，手机扫一下就打开；拍照或扫描成黑白文档，直接落进电脑文件夹，不经过任何隧道，毫秒级。",
   "type": "module",
   "main": "lib/index.js",
